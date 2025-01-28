@@ -1,7 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import sqlite3 from "sqlite3";
+import path from "path";
 
-const db = new sqlite3.Database('./indo_tb.sqlite'); // Pastikan file database Anda ada di lokasi ini.
+const dbPath = path.join(process.cwd(), 'public', 'indo_tb.sqlite');
+console.log(dbPath);
+const db = new sqlite3.Database(dbPath); // Pastikan file database Anda ada di lokasi ini.
 interface Data {
     book: string;
     chapter: number;
