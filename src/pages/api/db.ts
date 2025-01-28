@@ -4,12 +4,7 @@ import path from "path";
 
 const dbPath = path.join(process.cwd(), 'public', 'indo_tb.sqlite');
 console.log(dbPath);
-const db = new sqlite3.Database(dbPath); // Pastikan file database Anda ada di lokasi ini.
-interface Data {
-    book: string;
-    chapter: number;
-    verse: number;
-}
+const db = new sqlite3.Database(dbPath);
 
 interface ResponseData {
     book: number,
@@ -17,74 +12,6 @@ interface ResponseData {
     id: number,
     text: string,
     verse: number
-};
-const numberToBooks = {
-    1: "Kejadian",
-    2: "Keluaran",
-    3: "Imamat",
-    4: "Bilangan",
-    5: "Ulangan",
-    6: "Yosua",
-    7: "Hakim-Hakim",
-    8: "Rut",
-    9: "1 Samuel",
-    10: "2 Samuel",
-    11: "1 Raja-Raja",
-    12: "2 Raja-Raja",
-    13: "1 Tawarikh",
-    14: "2 Tawarikh",
-    15: "Ezra",
-    16: "Nehemia",
-    17: "Ester",
-    18: "Ayub",
-    19: "Mazmur",
-    20: "Amsal",
-    21: "Pengkhotbah",
-    22: "Kidung Agung",
-    23: "Yesaya",
-    24: "Yeremia",
-    25: "Ratapan",
-    26: "Yehezkiel",
-    27: "Daniel",
-    28: "Hosea",
-    29: "Yoel",
-    30: "Amos",
-    31: "Obaja",
-    32: "Yunus",
-    33: "Mikha",
-    34: "Nahum",
-    35: "Habakuk",
-    36: "Zefanya",
-    37: "Hagai",
-    38: "Zakharia",
-    39: "Maleakhi",
-    40: "Matius",
-    41: "Markus",
-    42: "Lukas",
-    43: "Yohanes",
-    44: "Kisah Para Rasul",
-    45: "Roma",
-    46: "1 Korintus",
-    47: "2 Korintus",
-    48: "Galatia",
-    49: "Efesus",
-    50: "Filipi",
-    51: "Kolose",
-    52: "1 Tesalonika",
-    53: "2 Tesalonika",
-    54: "1 Timotius",
-    55: "2 Timotius",
-    56: "Titus",
-    57: "Filemon",
-    58: "Ibrani",
-    59: "Yakobus",
-    60: "1 Petrus",
-    61: "2 Petrus",
-    62: "1 Yohanes",
-    63: "2 Yohanes",
-    64: "3 Yohanes",
-    65: "Yudas",
-    66: "Wahyu"
 };
 
 const booksToNumbers = {
