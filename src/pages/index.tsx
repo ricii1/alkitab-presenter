@@ -223,18 +223,24 @@ export default function Home() {
               onChange={(event) => setSpacing(parseInt(event.target.value))}
             />
           </div>
-          <div className="border border-black p-2">
-            <label htmlFor="lineHeight">Line Height: </label>
-            <input
-              type="number"
-              min={1}
-              id="lineHeight"
-              value={lineHeight}
-              className="border border-black px-2"
-              step="0.25"
-              onChange={(event) =>
-                setLineHeight(parseFloat(event.target.value))
-              }
+          <div className="mt-4 p-4 border border-black">
+            <label htmlFor="customText" className="block font-bold mb-2">
+              Custom Text:
+            </label>
+            <textarea
+              id="customText"
+              className="w-full border p-2"
+              rows={4}
+              value={customText}
+              onChange={(event) => setCustomText(event.target.value)}
+              style={{
+                fontSize: `${fontSize}px`,
+                textAlign: textAlign,
+                fontWeight: isBold ? "bold" : "normal",
+                letterSpacing: `${spacing}px`,
+                lineHeight: lineHeight,
+                whiteSpace: "pre-wrap",
+              }}
             />
           </div>
         </div>
