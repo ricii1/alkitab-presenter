@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alkitab Presenter Studio Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Inter:wght@300;400;500;600;700;800&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="./alkitab_data.js"></script>
+  <script type="module" crossorigin src="/assets/index-BxbSFK0x.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-CprWE5Lp.css">
+</head>
+<body class="theme-black">
+  <div id="app" class="app-container">
+    
+    <!-- Top Studio Live Status Bar -->
+    <header class="studio-top-bar" id="studioTopBar">
+      <div class="top-bar-left">
+        <div class="brand-badge">
+          <span class="brand-icon">✝️</span>
+          <span class="brand-name">Alkitab Presenter <span class="brand-tag">PRO</span></span>
+        </div>
+        <div class="live-status-pill" id="liveStatusPill" title="Status Output">
+          <span class="status-dot"></span>
+          <span class="status-text" id="statusPillText">ON AIR</span>
+        </div>
+        <div class="sync-status-pill" id="syncStatusPill" title="Koneksi Layar Ganda (BroadcastChannel)">
+          <span class="sync-icon">⚡</span>
+          <span class="sync-text" id="syncPillText">SYNC READY</span>
+        </div>
+      </div>
+
+      <div class="top-bar-right">
+        <!-- Quick Display Mode Toggle Pills -->
+        <div class="segmented-mode-picker" title="Mode Tampilan Presentasi">
+          <button type="button" class="mode-pill active" id="modeFullSlideBtn" data-mode="full">
+            <span>🖥️ Full Slide</span>
+          </button>
+          <button type="button" class="mode-pill" id="modeLowerThirdBtn" data-mode="lower-third">
+            <span>📺 Lower Third (OBS)</span>
+          </button>
+        </div>
+
+        <!-- Pop-out Window Launchers -->
+        <div class="popout-actions-group">
+          <button type="button" class="btn-studio-action" id="openPopoutControllerBtn" title="Buka Jendela Pop-up Controller Terpisah (Operator Window)">
+            <span class="btn-icon">🎛️</span>
+            <span>Pop-up Controller</span>
+          </button>
+          <button type="button" class="btn-studio-action" id="openPopoutOutputBtn" title="Buka Layar Output Bersih Terpisah (Untuk Proyektor / OBS Window Capture)">
+            <span class="btn-icon">📽️</span>
+            <span>Layar Output</span>
+          </button>
+        </div>
+
+        <!-- Minimize / Toggle Controls Bar -->
+        <button type="button" class="btn-studio-icon" id="togglePanelBtn" title="Sembunyikan / Tampilkan Panel Kontrol (H)">
+          <span id="togglePanelIcon">👁️</span>
+        </button>
+
+        <!-- Fullscreen Toggle -->
+        <button type="button" class="btn-studio-icon btn-fullscreen-top" id="fullscreenBtn" title="Layar Penuh (F)">
+          <span>⛶</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Studio Controls Panel -->
+    <div class="controls-panel" id="controlsPanel">
+      
+      <!-- SECTION 1: Scripture Navigator (Cascading Dropdowns & Steppers) -->
+      <div class="panel-section section-navigator">
+        <div class="section-badge">1. PILIH AYAT FIRMAN</div>
+        <div class="control-row row-navigator">
+          
+          <!-- Book Selector -->
+          <div class="control-group group-book">
+            <label for="bookSelect">
+              <span class="lbl-icon">📖</span> Kitab:
+            </label>
+            <div class="select-wrapper">
+              <select id="bookSelect" class="input-control select-book">
+                <option value="">-- Pilih Kitab --</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Chapter Selector with Grid Picker Trigger -->
+          <div class="control-group group-chapter">
+            <label for="chapterSelect">
+              <span class="lbl-icon">🔖</span> Pasal:
+            </label>
+            <div class="picker-stepper-combo">
+              <button type="button" class="btn-stepper" id="chapDecBtn" title="Pasal Sebelumnya">−</button>
+              <select id="chapterSelect" class="input-control select-num">
+                <!-- Populated dynamically -->
+              </select>
+              <button type="button" class="btn-stepper" id="chapIncBtn" title="Pasal Berikutnya">+</button>
+              <button type="button" class="btn-grid-icon" id="openChapterModalBtn" title="Buka Grid Nomor Pasal">🔢</button>
+            </div>
+          </div>
+
+          <!-- Verse Start Selector -->
+          <div class="control-group group-verse">
+            <label for="verseStartSelect">
+              <span class="lbl-icon">📍</span> Dari Ayat:
+            </label>
+            <div class="stepper-combo">
+              <button type="button" class="btn-stepper" id="verseStartDecBtn" title="Ayat Mulai Sebelumnya">−</button>
+              <select id="verseStartSelect" class="input-control select-num" title="Pilih Ayat Mulai">
+                <!-- Populated dynamically -->
+              </select>
+              <button type="button" class="btn-stepper" id="verseStartIncBtn" title="Ayat Mulai Berikutnya">+</button>
+            </div>
+          </div>
+
+          <!-- Verse End Selector -->
+          <div class="control-group group-verse">
+            <label for="verseEndSelect">
+              <span class="lbl-icon">🏁</span> Sampai Ayat:
+            </label>
+            <div class="stepper-combo">
+              <button type="button" class="btn-stepper" id="verseEndDecBtn" title="Ayat Selesai Sebelumnya">−</button>
+              <select id="verseEndSelect" class="input-control select-num" title="Pilih Ayat Selesai">
+                <!-- Populated dynamically -->
+              </select>
+              <button type="button" class="btn-stepper" id="verseEndIncBtn" title="Ayat Selesai Berikutnya">+</button>
+            </div>
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div class="action-buttons-wrap">
+            <button type="button" id="quickPickerBtn" class="btn-action-glow btn-quick-pick" title="Buka Wizard Pemilih Ayat 3 Langkah Praktis">
+              <span class="btn-icon">⚡</span>
+              <span>Pilih Cepat</span>
+            </button>
+
+            <button type="button" id="searchBtn" class="btn-action-glow btn-search-primary" title="Tampilkan Ayat ke Layar (Enter)">
+              <span class="btn-icon">🔍</span>
+              <span>Tampilkan</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SECTION 2: Broadcast Studio & Presentation Tools (Blackout, Clear, Navigation, OBS Themes) -->
+      <div class="panel-section section-broadcast">
+        <div class="section-badge">2. LIVE BROADCAST & OBS TOOLS</div>
+        <div class="control-row row-broadcast">
+          
+          <!-- Live Presenter Playback Nav -->
+          <div class="broadcast-subgroup">
+            <span class="group-title">Navigasi:</span>
+            <div class="btn-group-segmented">
+              <button type="button" id="prevVerseBtn" class="btn-tool" title="Ayat/Bagian Sebelumnya (Panah Kiri / PageUp)">
+                <span class="icon">◀</span> Prev
+              </button>
+              <button type="button" id="nextVerseBtn" class="btn-tool" title="Ayat/Bagian Berikutnya (Panah Kanan / Space / PageDown)">
+                Next <span class="icon">▶</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Live Screen State (Blackout / Clear) -->
+          <div class="broadcast-subgroup">
+            <span class="group-title">Live State:</span>
+            <div class="btn-group-segmented">
+              <button type="button" id="blackoutBtn" class="btn-tool btn-toggle-blackout" title="Layar Hitam / Blackout (B)">
+                <span class="dot-indicator"></span>
+                <span>⚫ Blackout</span>
+              </button>
+              <button type="button" id="clearTextBtn" class="btn-tool btn-toggle-clear" title="Bersihkan Teks / Clear (C)">
+                <span class="dot-indicator"></span>
+                <span>⚪ Clear</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Theme & Background Preset for OBS / Projector -->
+          <div class="broadcast-subgroup">
+            <label for="bgThemeSelect" class="group-title">Theme / Preset:</label>
+            <div class="select-wrapper">
+              <select id="bgThemeSelect" class="input-control select-theme">
+                <option value="black" selected>⚫ True Black (Projector / OBS)</option>
+                <option value="obs-transparent">🪟 Transparent (OBS Alpha Overlay)</option>
+                <option value="chroma-green">🟩 Chroma Green (OBS Color Key)</option>
+                <option value="dark-blue">🌌 Cinematic Navy Glass</option>
+                <option value="charcoal">🌑 Charcoal Obsidian</option>
+                <option value="sepia">📜 Warm Vintage Sepia</option>
+                <option value="light">☀️ Clean Light Mode</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Utilities: Copy & Reset -->
+          <div class="broadcast-subgroup">
+            <span class="group-title">Opsi:</span>
+            <div class="btn-group-segmented">
+              <button type="button" id="copyBtn" class="btn-tool" title="Salin Teks Ayat ke Clipboard">
+                <span>📋 Salin</span>
+              </button>
+              <button type="button" id="resetStylesBtn" class="btn-tool btn-dim" title="Reset Pengaturan Teks ke Default">
+                <span>🔄 Reset</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SECTION 3: Realtime Typography & Display Customization -->
+      <div class="panel-section section-typography">
+        <div class="section-badge">3. FORMAT TIPOGRAFI & GAYA TEKS</div>
+        <div class="control-row row-typography">
+          
+          <!-- Font Family -->
+          <div class="control-group">
+            <label for="fontFamilySelect">Font Family:</label>
+            <select id="fontFamilySelect" class="input-control select-font">
+              <option value="'Inter', sans-serif" selected>Modern Clean (Inter)</option>
+              <option value="'Merriweather', serif">Elegant Serif (Merriweather)</option>
+              <option value="'Cinzel', serif">Classic Scripture (Cinzel)</option>
+              <option value="'Outfit', sans-serif">Geometric Sans (Outfit)</option>
+              <option value="system-ui, sans-serif">System Default</option>
+            </select>
+          </div>
+
+          <!-- Font Size Slider & Number Input -->
+          <div class="control-group group-font-size">
+            <label for="fontSizeInput">Ukuran: <span id="fontSizeDisplayVal">28px</span></label>
+            <div class="slider-with-number">
+              <input type="range" id="fontSizeSlider" min="14" max="120" value="28" class="range-slider" />
+              <input type="number" id="fontSizeInput" class="input-control input-num-sm" value="28" min="12" max="140" />
+            </div>
+          </div>
+
+          <!-- Text Align Segmented Buttons -->
+          <div class="control-group">
+            <label>Perataan Teks:</label>
+            <div class="btn-group-segmented align-segmented">
+              <button type="button" class="btn-align active" data-align="left" title="Rata Kiri">Left</button>
+              <button type="button" class="btn-align" data-align="center" title="Rata Tengah">Center</button>
+              <button type="button" class="btn-align" data-align="right" title="Rata Kanan">Right</button>
+              <button type="button" class="btn-align" data-align="justify" title="Rata Kiri Kanan">Justify</button>
+            </div>
+          </div>
+
+          <!-- Bold, Shadow & Enhancements -->
+          <div class="control-group toggles-group">
+            <label>Efek Teks:</label>
+            <div class="toggles-row">
+              <label class="custom-toggle" title="Tebalkan Teks">
+                <input type="checkbox" id="boldCheck" />
+                <span class="toggle-track"></span>
+                <span class="toggle-label">Bold</span>
+              </label>
+
+              <label class="custom-toggle" title="Bayangan Teks Tebal (Sangat penting agar mudah dibaca di atas video kamera OBS)">
+                <input type="checkbox" id="textShadowCheck" checked />
+                <span class="toggle-track"></span>
+                <span class="toggle-label">Text Shadow</span>
+              </label>
+
+              <label class="custom-toggle" title="Tampilkan Teks Kapital">
+                <input type="checkbox" id="uppercaseCheck" />
+                <span class="toggle-track"></span>
+                <span class="toggle-label">ALL CAPS</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Letter Spacing & Line Height -->
+          <div class="control-group group-spacing">
+            <label for="lineHeightInput">Line Height:</label>
+            <input type="number" id="lineHeightInput" class="input-control input-num-sm" value="1.5" step="0.1" min="1.0" max="3.0" />
+          </div>
+
+          <div class="control-group group-spacing">
+            <label for="letterSpacingInput">Spacing:</label>
+            <input type="number" id="letterSpacingInput" class="input-control input-num-sm" value="0" step="0.5" min="-2" max="10" />
+          </div>
+
+          <!-- Text & Title Color Pickers -->
+          <div class="control-group group-colors">
+            <label>Warna:</label>
+            <div class="color-pickers-row">
+              <div class="color-picker-item" title="Warna Teks Ayat">
+                <span class="color-lbl">Teks</span>
+                <input type="color" id="verseColorInput" value="#ffffff" class="color-input" />
+              </div>
+              <div class="color-picker-item" title="Warna Judul Referensi">
+                <span class="color-lbl">Judul</span>
+                <input type="color" id="titleColorInput" value="#ffd700" class="color-input" />
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Floating Draggable Mini Control HUD (For Single-Screen / Live Presenter Mode) -->
+    <div class="floating-hud-dock" id="floatingHudDock">
+      <div class="hud-drag-handle" id="hudDragHandle" title="Tahan & geser untuk memindahkan dock">
+        <span class="hud-grip-dots">⋮⋮</span>
+        <span class="hud-title">Controls HUD</span>
+      </div>
+      <div class="hud-actions-bar">
+        <button type="button" id="hudPrevBtn" class="btn-hud" title="Ayat Sebelumnya (←)">◀</button>
+        <button type="button" id="hudQuickPickBtn" class="btn-hud btn-hud-highlight" title="Pilih Cepat Ayat (⚡)">⚡</button>
+        <button type="button" id="hudNextBtn" class="btn-hud" title="Ayat Berikutnya (→)">▶</button>
+        <div class="hud-divider"></div>
+        <button type="button" id="hudBlackoutBtn" class="btn-hud" title="Toggle Blackout (B)">⚫</button>
+        <button type="button" id="hudClearBtn" class="btn-hud" title="Toggle Clear (C)">⚪</button>
+        <div class="hud-divider"></div>
+        <button type="button" id="hudModeBtn" class="btn-hud" title="Ganti Mode (Full / Lower-Third)">📺</button>
+        <button type="button" id="hudPopoutBtn" class="btn-hud" title="Buka Pop-up Controller Terpisah">🎛️</button>
+        <button type="button" id="hudExpandBtn" class="btn-hud" title="Buka Panel Lengkap">⚙️</button>
+      </div>
+    </div>
+
+    <!-- Floating Restore Button when Panel Hidden -->
+    <button id="showControlsFab" class="fab-controls hidden" title="Tampilkan Kontrol Panel Studio (H)">
+      <span>⚙️ Controls Studio</span>
+    </button>
+
+    <!-- Floating Side Navigation Arrows (YouVersion Style with Hover Glow) -->
+    <button id="sidePrevBtn" class="side-nav-btn side-nav-prev" title="Ayat Sebelumnya (Panah Kiri)">
+      <span>‹</span>
+    </button>
+    <button id="sideNextBtn" class="side-nav-btn side-nav-next" title="Ayat Berikutnya (Panah Kanan)">
+      <span>›</span>
+    </button>
+
+    <!-- Status / Notification Message Toast -->
+    <div id="statusMessage" class="status-toast hidden"></div>
+
+    <!-- Blackout Screen Overlay (Smoothest Live Transition) -->
+    <div id="blackoutOverlay" class="blackout-screen hidden"></div>
+
+    <!-- Interactive 3-Step Selection Modal (Pasal -> Ayat Mulai -> Ayat Selesai) -->
+    <div id="guidedModal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-header-info">
+            <div class="modal-step-badge" id="modalStepBadge">Langkah 1</div>
+            <h3 id="modalStepTitle">Pilih Pasal</h3>
+            <span id="modalCurrentSelection" class="modal-badge-selection">Kejadian</span>
+          </div>
+          <button type="button" id="closeModalBtn" class="btn-close-modal" title="Tutup Modal (Esc)">✕</button>
+        </div>
+
+        <!-- Progress Steps Indicator Tabs -->
+        <div class="modal-steps-bar">
+          <button type="button" id="stepTabBook" class="step-tab">1. Kitab</button>
+          <button type="button" id="stepTabChapter" class="step-tab active">2. Pasal</button>
+          <button type="button" id="stepTabVerseStart" class="step-tab">3. Ayat Mulai</button>
+          <button type="button" id="stepTabVerseEnd" class="step-tab">4. Ayat Selesai</button>
+        </div>
+
+        <div class="modal-body">
+          <!-- Book Testament Filter when on Book step -->
+          <div id="testamentFilterBar" class="testament-filter-bar hidden">
+            <button type="button" class="btn-testament active" id="filterAllBooks">Semua (66)</button>
+            <button type="button" class="btn-testament" id="filterOTBooks">Perjanjian Lama (39)</button>
+            <button type="button" class="btn-testament" id="filterNTBooks">Perjanjian Baru (27)</button>
+          </div>
+
+          <div class="modal-instructions-bar">
+            <p id="modalInstructionText">Pilih nomor pasal:</p>
+            <button type="button" id="modalBackBtn" class="btn-modal-back hidden">← Kembali</button>
+          </div>
+
+          <!-- Quick Action Single Verse shortcut on step 3/4 -->
+          <div id="singleVerseShortcutContainer" class="shortcut-container hidden">
+            <button type="button" id="singleVerseBtn" class="btn-shortcut-single">
+              ✓ Tampilkan Hanya Ayat Ini (1 Ayat)
+            </button>
+          </div>
+
+          <!-- Grid of Numbers or Books -->
+          <div id="modalNumbersGrid" class="numbers-grid">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Display / Presentation Area -->
+    <main class="display-container" id="displayContainer">
+      <div class="verse-display-card mode-full" id="displayArea">
+        <div class="placeholder-content">
+          <div class="bible-icon">📖</div>
+          <h2>Alkitab Presenter Studio Pro</h2>
+          <p>Presenter firman Tuhan siap tayang untuk Layar Ibadah, Proyektor, dan Live Stream <strong>OBS Studio</strong>.</p>
+          <div class="quick-feature-pills">
+            <span class="feat-pill">⚡ Pop-up Controller</span>
+            <span class="feat-pill">📺 OBS Lower Third</span>
+            <span class="feat-pill">🪟 Alpha Overlay</span>
+            <span class="feat-pill">⚫ Instant Blackout</span>
+          </div>
+          <div class="quick-instructions">
+            <span>💡 <em>Klik <strong>⚡ Pilih Cepat</strong> atau gunakan navigasi di atas untuk langsung menampilkan firman.</em></span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+</body>
+</html>
